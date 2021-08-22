@@ -20,6 +20,13 @@ QUANTUM_SRC += \
     $(QUANTUM_DIR)/send_string.c \
     $(QUANTUM_DIR)/bitwise.c \
     $(QUANTUM_DIR)/led.c \
+    $(QUANTUM_DIR)/action.c \
+    $(QUANTUM_DIR)/action_layer.c \
+    $(QUANTUM_DIR)/action_macro.c \
+    $(QUANTUM_DIR)/action_tapping.c \
+    $(QUANTUM_DIR)/action_util.c \
+    $(QUANTUM_DIR)/eeconfig.c \
+    $(QUANTUM_DIR)/keyboard.c \
     $(QUANTUM_DIR)/keymap_common.c \
     $(QUANTUM_DIR)/keycode_config.c \
     $(QUANTUM_DIR)/logging/debug.c \
@@ -178,6 +185,7 @@ else
       else ifneq ($(filter $(MCU_SERIES),STM32L0xx STM32L1xx),)
         OPT_DEFS += -DEEPROM_DRIVER
         COMMON_VPATH += $(DRIVER_PATH)/eeprom
+        COMMON_VPATH += $(PLATFORM_PATH)/$(PLATFORM_KEY)/$(DRIVER_DIR)/eeprom
         SRC += eeprom_driver.c eeprom_stm32_L0_L1.c
       else
         # This will effectively work the same as "transient" if not supported by the chip
@@ -481,18 +489,15 @@ ifeq ($(strip $(DIP_SWITCH_ENABLE)), yes)
     SRC += $(QUANTUM_DIR)/dip_switch.c
 endif
 
-VALID_MAGIC_TYPES := yes full lite
+VALID_MAGIC_TYPES := yes lite
 BOOTMAGIC_ENABLE ?= no
 ifneq ($(strip $(BOOTMAGIC_ENABLE)), no)
   ifeq ($(filter $(BOOTMAGIC_ENABLE),$(VALID_MAGIC_TYPES)),)
     $(error BOOTMAGIC_ENABLE="$(BOOTMAGIC_ENABLE)" is not a valid type of magic)
   endif
-  ifneq ($(strip $(BOOTMAGIC_ENABLE)), full)
+  ifneq ($(strip $(BOOTMAGIC_ENABLE)), no)
       OPT_DEFS += -DBOOTMAGIC_LITE
       QUANTUM_SRC += $(QUANTUM_DIR)/bootmagic/bootmagic_lite.c
-  else
-    OPT_DEFS += -DBOOTMAGIC_ENABLE
-    QUANTUM_SRC += $(QUANTUM_DIR)/bootmagic/bootmagic_full.c
   endif
 endif
 COMMON_VPATH += $(QUANTUM_DIR)/bootmagic
@@ -517,22 +522,10 @@ ifneq ($(strip $(CUSTOM_MATRIX)), yes)
     endif
 endif
 
-# Support for translating old names to new names:
-ifeq ($(strip $(DEBOUNCE_TYPE)),sym_g)
-    DEBOUNCE_TYPE:=sym_defer_g
-else ifeq ($(strip $(DEBOUNCE_TYPE)),eager_pk)
-    DEBOUNCE_TYPE:=sym_eager_pk
-else ifeq ($(strip $(DEBOUNCE_TYPE)),sym_pk)
-    DEBOUNCE_TYPE:=sym_defer_pk
-else ifeq ($(strip $(DEBOUNCE_TYPE)),eager_pr)
-    DEBOUNCE_TYPE:=sym_eager_pr
-endif
-
-DEBOUNCE_DIR:= $(QUANTUM_DIR)/debounce
 # Debounce Modules. Set DEBOUNCE_TYPE=custom if including one manually.
-DEBOUNCE_TYPE?= sym_defer_g
+DEBOUNCE_TYPE ?= sym_defer_g
 ifneq ($(strip $(DEBOUNCE_TYPE)), custom)
-    QUANTUM_SRC += $(DEBOUNCE_DIR)/$(strip $(DEBOUNCE_TYPE)).c
+    QUANTUM_SRC += $(QUANTUM_DIR)/debounce/$(strip $(DEBOUNCE_TYPE)).c
 endif
 
 ifeq ($(strip $(SPLIT_KEYBOARD)), yes)
@@ -595,7 +588,7 @@ ifneq ($(filter SOLENOID, $(HAPTIC_ENABLE)), )
 endif
 
 ifeq ($(strip $(HD44780_ENABLE)), yes)
-    SRC += drivers/avr/hd44780.c
+    SRC += platforms/avr/drivers/hd44780.c
     OPT_DEFS += -DHD44780_ENABLE
 endif
 
@@ -708,6 +701,11 @@ endif
 
 ifeq ($(strip $(JOYSTICK_ENABLE)), digital)
     OPT_DEFS += -DDIGITAL_JOYSTICK_ENABLE
+endif
+
+DIGITIZER_ENABLE ?= no
+ifneq ($(strip $(DIGITIZER_ENABLE)), no)
+    SRC += $(QUANTUM_DIR)/digitizer.c
 endif
 
 USBPD_ENABLE ?= no

@@ -14,7 +14,7 @@ BOARD = IC_TEENSY_3_1
 # Build Options
 #   comment out to disable the options.
 #
-BOOTMAGIC_ENABLE = no  # Virtual DIP switch configuration
+BOOTMAGIC_ENABLE = no       # Enable Bootmagic Lite
 MOUSEKEY_ENABLE  = yes # Mouse keys
 EXTRAKEY_ENABLE  = yes # Audio control and System control
 CONSOLE_ENABLE   = no  # Console for debug
@@ -24,7 +24,6 @@ NKRO_ENABLE      = yes # USB Nkey Rollover - if this doesn't work, see here: htt
 UNICODE_ENABLE   = yes # Unicode
 SWAP_HANDS_ENABLE= yes # Allow swapping hands of keyboard
 
-MIDI_ENABLE = no
 RGBLIGHT_ENABLE = no
 
 SPLIT_KEYBOARD = yes

@@ -1,4 +1,4 @@
-BOOTMAGIC_ENABLE   = lite       # Virtual DIP switch configuration(+1000)
+BOOTMAGIC_ENABLE = lite     # Enable Bootmagic Lite
 MOUSEKEY_ENABLE    = no       # Mouse keys(+4700)
 EXTRAKEY_ENABLE    = yes       # Audio control and System control(+450)
 TAP_DANCE_ENABLE   = no
@@ -11,7 +11,6 @@ ifneq ($(strip $(KEYBOARD)), planck/rev6)
     ifeq ($(strip $(LAYOUT_HAS_RGB)), yes)
         RGBLIGHT_ENABLE         = yes
         INDICATOR_LIGHTS            = yes
-        RGBLIGHT_TWINKLE            = yes
         RGBLIGHT_STARTUP_ANIMATION  = yes
     endif
 else
@@ -37,7 +36,6 @@ ifeq ($(strip $(KEYBOARD)), planck/ez)
     ENCODER_MAP_ENABLE          = yes
     RGB_MATRIX_ENABLE           = yes
     INDICATOR_LIGHTS            = yes
-    RGBLIGHT_TWINKLE            = yes
     RGBLIGHT_STARTUP_ANIMATION  = yes
     CONSOLE_ENABLE              = yes
     COMMAND_ENABLE              = yes
