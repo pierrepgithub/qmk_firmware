@@ -66,6 +66,6 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
 
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     if (IS_HOST_LED_ON(USB_LED_CAPS_LOCK)) {
-        RGB_MATRIX_INDICATOR_SET_COLOR(255, 0, 0, 34); //capslock key
+        RGB_MATRIX_INDICATOR_SET_COLOR(3, 255, 0, 0); //capslock key
     }
 }
